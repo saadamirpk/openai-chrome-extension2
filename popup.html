@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Mega Writer</title>
+    <style>
+        /* CSS to style the floating button */
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: none;
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        /* CSS to style the dropdown menu */
+        #dropdown-menu {
+            position: fixed;
+            bottom: 100px;
+            right: 40px;
+            display: none;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            width: 300px; /* Adjust the width of the dropdown menu */
+            max-height: 200px; /* Set a maximum height for the dropdown menu */
+            overflow-y: auto; /* Enable vertical scrolling if the content exceeds the maximum height */
+        }
+
+        #promptOptions {
+            width: 200px; /* Adjust the width of the dropdown menu */
+            /* Add any other styles you want for the prompt options dropdown */
+        }
+    </style>
+    <script src="popup.js"></script>
+</head>
+<body>
+    <div id="api-key-entry">
+        <h1>Enter Your API Key</h1>
+        <input type="text" id="apiKey" placeholder="Enter your API key">
+        <button id="submitApiKeyButton">Submit</button>
+    </div>
+
+    <div id="main-functionalities">
+        <!-- Add other HTML elements for main functionalities here -->
+        <!-- For example, the floating button -->
+        <button id="passAndReplaceButton">Pass & Replace Selected Text</button>
+        <div id="dropdown-menu">
+            <!-- Prompt options will be added dynamically through JavaScript to the existing select element -->
+            <select id="promptOptions">
+                <!-- Prompt options will be added dynamically through JavaScript -->
+            </select>
+        </div>
+    </div>
+
+    <!-- Toggle switch container -->
+    <div id="toggleContainer">
+        <label for="toggleSwitch">Hide Floating Button</label>
+        <input type="checkbox" id="toggleSwitch">
+    </div>
+
+    <div id="popup" style="display: none;">
+        <!-- Custom pop-up element for showing messages -->
+        <p id="popupText"></p>
+    </div>
+
+    <div>
+        <label for="apiOptions">Select API:</label>
+        <select id="apiOptions">
+            <option value="api1">API Option 1</option>
+            <option value="api2">API Option 2</option>
+            <option value="api3">API Option 3</option>
+            <!-- Add more API options as needed -->
+        </select>
+    </div>
+</body>
+</html>
