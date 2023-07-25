@@ -1,52 +1,70 @@
 // Listen for messages from the popup
 chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    console.log('Received message:', message);
+    console.log("Received message:", message);
     if (message.action === "selectedText") {
         // Extract data from the message
         const selectedText = message.selectedText;
-        const selectedApi = message.selectedApi;
+        const apiUrl = message.selectedApi;
         const selectedPrompt = message.selectedPrompt;
         const apiKey = message.apiKey;
 
         // Your API call logic here using apiKey, selectedApi, selectedPrompt, and selectedText
-        const apiUrl = getApiUrl(selectedApi);
 
-        if (apiUrl && selectedText && selectedPrompt && apiKey) {
+        if (apiUrl && selectedText && apiKey) {
+            console.log("all data found");
             const data = {
-                model: 'text-davinci-003',
-                prompt: selectedPrompt + ' ' + selectedText,
+                model: "text-davinci-003",
+                prompt: selectedPrompt + " " + selectedText,
                 temperature: 1,
                 max_tokens: 256,
-                api_key: apiKey
+                api_key: apiKey,
             };
 
             // Make the API call using fetch()
             fetch(apiUrl, {
-                method: 'POST',
+                method: "POST",
                 headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + apiKey,
+                    "Content-Type": "application/json",
+                    Authorization: "Bearer " + apiKey,
                 },
-                body: JSON.stringify(data)
+                body: JSON.stringify(data),
             })
-                .then(response => {
+                .then((response) => {
                     if (!response.ok) {
-                        throw new Error('API call failed with status ' + response.status);
+                        throw new Error(
+                            "API call failed with status " + response.status
+                        );
                     }
                     return response.json();
                 })
-                .then(data => {
+                .then((data) => {
                     // Send the API response data back to the popup
                     sendResponse({ success: true, response: data });
                 })
-                .catch(error => {
-                    sendResponse({ success: false, error: 'API call error: ' + error });
+                .catch((error) => {
+                    sendResponse({
+                        success: false,
+                        error: "API call error: " + error,
+                    });
                 });
 
             // Return true to indicate that we will be sending the response asynchronously
             return true;
         } else {
-            sendResponse({ success: false, error: 'Invalid API configuration. Please check your API options.' });
+            sendResponse({
+                success: false,
+                error: "Invalid API configuration. Please check your API options.",
+            });
         }
+    } else if (message.action === "getSelectedText") {
+        console.log("getting selected text: ", message.selectedText);
+
+        sendResponse({
+            success: true,
+            response: { selectedText: message.selectedText },
+        });
+
+        // Return true to indicate that we will be sending the response asynchronously
+        return true;
     }
 });
