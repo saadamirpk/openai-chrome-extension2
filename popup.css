@@ -1,0 +1,56 @@
+body {
+    width: 250px;
+    padding: 16px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+}
+
+img {
+    max-width: 250px;
+}
+
+button {
+    width: 236px;
+    padding: 6px;
+    background-color: #01373b;
+    border: 1px solid #01373b;
+    color: #fff;
+    margin: 0;
+}
+
+button:hover {
+    cursor: pointer;
+    background-color: #014b51;
+}
+
+input {
+    width: 220px;
+    padding: 6px;
+    background-color: #000;
+    border: 1px solid #1ca4ad;
+    color: #fff;
+    margin-bottom: 12px;
+}
+
+input:hover {
+    background-color: #01373b;
+}
+
+input:focus {
+    outline: none !important;
+    border: 1px solid #1ca4ad;
+    box-shadow: 0 0 10px #1ca4ad;
+}
+
+#blurBox {
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    background-color: #1ca4ad;
+    opacity: 50%;
+    top: 25%;
+    left: 15%;
+    filter: blur(50px);
+    z-index: -1;
+}

@@ -1,52 +1,67 @@
-// Listen for messages from the popup
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    console.log('Received message:', message);
-    if (message.action === "selectedText") {
-        // Extract data from the message
-        const selectedText = message.selectedText;
-        const selectedApi = message.selectedApi;
-        const selectedPrompt = message.selectedPrompt;
-        const apiKey = message.apiKey;
+let apiKey = "";
+let contentPort;
 
-        // Your API call logic here using apiKey, selectedApi, selectedPrompt, and selectedText
-        const apiUrl = getApiUrl(selectedApi);
-
-        if (apiUrl && selectedText && selectedPrompt && apiKey) {
-            const data = {
-                model: 'text-davinci-003',
-                prompt: selectedPrompt + ' ' + selectedText,
-                temperature: 1,
-                max_tokens: 256,
-                api_key: apiKey
-            };
-
-            // Make the API call using fetch()
-            fetch(apiUrl, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + apiKey,
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('API call failed with status ' + response.status);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    // Send the API response data back to the popup
-                    sendResponse({ success: true, response: data });
-                })
-                .catch(error => {
-                    sendResponse({ success: false, error: 'API call error: ' + error });
-                });
-
-            // Return true to indicate that we will be sending the response asynchronously
-            return true;
-        } else {
-            sendResponse({ success: false, error: 'Invalid API configuration. Please check your API options.' });
-        }
+chrome.storage.local.get(["key"]).then((result) => {
+    if (result.key) {
+        apiKey = result.key;
     }
 });
+
+// Handle connections from content scripts
+chrome.runtime.onConnect.addListener((port) => {
+    if (port.name === "content") {
+        contentPort = port;
+        port.onMessage.addListener((message) => {
+            if (message.action === "NewPrompt") {
+                makePromptRequest(message.promptInput, message.promptAction);
+            }
+        });
+    }
+});
+
+function postMessagetoContent(message) {
+    if (message && contentPort) {
+        contentPort.postMessage(message);
+    }
+}
+
+async function makePromptRequest(prompt, promptAction) {
+    if (apiKey) {
+        console.log("Making Request For:", prompt);
+
+        const body = {
+            model: "text-davinci-003",
+            prompt: promptAction + " " + prompt,
+            temperature: 1,
+            max_tokens: 256,
+        };
+
+        fetch("https://api.openai.com/v1/completions", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + apiKey,
+            },
+            body: JSON.stringify(body),
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error(
+                        "API call failed with status " + response.status
+                    );
+                }
+                return response.json();
+            })
+            .then((data) => {
+                postMessagetoContent({
+                    promptInput: prompt,
+                    result: data.choices[0].text,
+                });
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    } else {
+        console.log("Key not available to make Request");
+    }
+}
