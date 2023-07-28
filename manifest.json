@@ -1,35 +1,19 @@
 {
-  "manifest_version": 3,
-  "name": "Your Extension",
-  "version": "1.0",
-  "description": "Description of your extension",
-  "action": {
-    "default_popup": "popup.html"
-  },
-  "permissions": [
-    "activeTab",
-    "storage",
-    "webRequest",
-    "*://*.api.openai.com*"
-  ],
-  "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
-  },
-  "content_scripts": [
-    {
-      "matches": [ "<all_urls>" ],
-      "js": [ "content.js" ]
+    "manifest_version": 3,
+    "name": "INTELLITHING - Find & Replace",
+    "version": "1.0",
+    "description": "Prompt to replace with result on the webpage!",
+    "permissions": ["activeTab", "storage", "scripting"],
+    "action": {
+        "default_popup": "popup.html"
+    },
+    "content_scripts": [
+        {
+            "matches": ["<all_urls>"],
+            "js": ["content.js"]
+        }
+    ],
+    "background": {
+        "service_worker": "background.js"
     }
-  ],
-  "background": {
-    "service_worker": "background.js"
-  },
-  "web_accessible_resources": [
-    {
-      "resources": [ "popup.html" ],
-      "matches": [ "https://*/*", "http://*/*" ]
-    }
-  ]
 }
