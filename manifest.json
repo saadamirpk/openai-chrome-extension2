@@ -1,8 +1,8 @@
 {
     "manifest_version": 3,
-    "name": "INTELLITHING - Find & Replace",
+    "name": "INTELLITHING - AI Text Assistant",
     "version": "1.0",
-    "description": "Prompt to replace with result on the webpage!",
+    "description": "Your handy AI assistant, just highlight the text on the page to apply required modification!",
     "permissions": ["activeTab", "storage", "scripting"],
     "action": {
         "default_popup": "popup.html"
@@ -15,5 +15,11 @@
     ],
     "background": {
         "service_worker": "background.js"
+    },
+    "icons": {
+        "16": "assets/bot.png",
+        "32": "assets/bot.png",
+        "48": "assets/bot.png",
+        "128": "assets/bot.png"
     }
 }

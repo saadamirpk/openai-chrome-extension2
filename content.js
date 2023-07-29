@@ -2,15 +2,22 @@
 let buttonIds = [];
 const port = chrome.runtime.connect({ name: "content" });
 
-function createButton(text, position, promptInput, promptAction, boundingRect) {
-    const button = document.createElement("button");
+function createButton(
+    text,
+    position,
+    promptInput,
+    promptAction,
+    boundingX,
+    boundingY
+) {
+    const button = document.createElement("div");
     button.innerText = text;
     button.id = "Intellithing-" + text + "-Button";
     buttonIds.push(button.id);
 
     button.style.position = "fixed";
-    button.style.top = `${boundingRect.top - position * 32}px`;
-    button.style.left = `${boundingRect.right}px`;
+    button.style.top = `${boundingX - 32 + position * 32}px`;
+    button.style.left = `${boundingY + 30}px`;
 
     button.style.width = "30px";
     button.style.height = "30px";
@@ -19,11 +26,10 @@ function createButton(text, position, promptInput, promptAction, boundingRect) {
 
     button.style.color = "#fff";
     button.style.textAlign = "center";
+    button.style.fontSize = "24px";
     button.style.backgroundColor = "#1ca4ad";
-    button.style.border = "none";
 
     button.addEventListener("click", () => {
-        console.log("Button Click");
         port.postMessage({
             action: "NewPrompt",
             promptInput: promptInput,
@@ -33,28 +39,35 @@ function createButton(text, position, promptInput, promptAction, boundingRect) {
     document.body.appendChild(button);
 }
 
-document.addEventListener("mouseup", function () {
+document.addEventListener("mouseup", function (event) {
     const promptInput = window.getSelection().toString().trim();
-    const selectionRange = window.getSelection().getRangeAt(0);
-    const boundingRect = selectionRange.getBoundingClientRect();
 
-    chrome.storage.local.get(["appStatus"]).then((result) => {
-        if (result.appStatus) {
-            if (promptInput) {
-                createButton("R", 3, promptInput, "", boundingRect);
+    if (promptInput) {
+        chrome.storage.local.get(["appStatus"]).then((result) => {
+            if (result.appStatus) {
+                createButton(
+                    "R",
+                    3,
+                    promptInput,
+                    "",
+                    event.clientY,
+                    event.clientX
+                );
                 createButton(
                     "P",
                     2,
                     promptInput,
                     "Fix Punctuation Mistakes",
-                    boundingRect
+                    event.clientY,
+                    event.clientX
                 );
                 createButton(
                     "S",
                     1,
                     promptInput,
                     "Fix Spelling Mistakes",
-                    boundingRect
+                    event.clientY,
+                    event.clientX
                 );
 
                 createButton(
@@ -62,13 +75,14 @@ document.addEventListener("mouseup", function () {
                     0,
                     promptInput,
                     "Fix Grammar Mistakes",
-                    boundingRect
+                    event.clientY,
+                    event.clientX
                 );
-            } else {
-                removeAllButtons();
             }
-        }
-    });
+        });
+    } else {
+        removeAllButtons();
+    }
 });
 
 port.onMessage.addListener((message) => {
@@ -120,21 +134,36 @@ function convertLatexToSimpleText(latexText) {
 }
 
 function replaceTextOnPage(promptInput, promptResult) {
-    const textNodes = document.evaluate(
-        "//text()",
+    const textNodesAndInputs = document.evaluate(
+        "//text() | //input[@type='text'] | //textarea",
         document,
         null,
         XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,
         null
     );
 
-    for (let i = 0; i < textNodes.snapshotLength; i++) {
-        const node = textNodes.snapshotItem(i);
-        const modifiedText = node.nodeValue.replace(
-            new RegExp(promptInput, "g"),
-            promptResult
-        );
-        node.nodeValue = modifiedText;
+    for (let i = 0; i < textNodesAndInputs.snapshotLength; i++) {
+        const node = textNodesAndInputs.snapshotItem(i);
+
+        if (
+            node.nodeType === Node.ELEMENT_NODE &&
+            (node.tagName === "INPUT" || node.tagName === "TEXTAREA")
+        ) {
+            // Handle input elements differently
+            const inputValue = node.value;
+            const modifiedInputValue = inputValue.replace(
+                new RegExp(promptInput, "g"),
+                promptResult
+            );
+            node.value = modifiedInputValue;
+        } else if (node.nodeType === Node.TEXT_NODE) {
+            // Handle text nodes
+            const modifiedText = node.nodeValue.replace(
+                new RegExp(promptInput, "g"),
+                promptResult
+            );
+            node.nodeValue = modifiedText;
+        }
     }
 }
 
