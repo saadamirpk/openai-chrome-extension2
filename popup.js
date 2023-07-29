@@ -2,17 +2,33 @@
 
 let apiKey = "";
 let result = "";
+let appActive = false;
 
 document.addEventListener("DOMContentLoaded", function () {
     isAPIKeySaved();
+    isAppActive();
     //clearAPIKey();
 
-    const findReplaceButton = document.getElementById("findReplaceButton");
+    const statusButton = document.getElementById("statusButton");
+    statusButton.addEventListener("click", function () {
+        if (apiKey) {
+            if (appActive) {
+                appDeactivate();
+            } else {
+                appActivate();
+            }
+        } else {
+            appDeactivate();
+        }
+    });
 
+    /* HIDDEN FIND AND REPLACE INPUTS
+    const findReplaceButton = document.getElementById("findReplaceButton");
     findReplaceButton.addEventListener("click", function () {
         const promptInput = document.getElementById("promptInput").value;
         makePromptRequest(promptInput);
     });
+    */
 });
 
 function isAPIKeySaved() {
@@ -35,6 +51,7 @@ function isAPIKeySaved() {
                         console.log("Key Saved");
                         apiInputSection.style.display = "none";
                         apiKey = apiKeyInput.value;
+                        appActivate();
                     });
             });
             return false;
@@ -42,9 +59,52 @@ function isAPIKeySaved() {
     });
 }
 
+function isAppActive() {
+    chrome.storage.local.get(["appStatus"]).then((result) => {
+        if (result.appStatus) {
+            return appActivate();
+        } else {
+            return appDeactivate();
+        }
+    });
+}
+
+function appActivate() {
+    const statusLabel = document.getElementById("statusLabel");
+    const statusButton = document.getElementById("statusButton");
+
+    chrome.storage.local.set({ appStatus: true }).then(() => {
+        console.log("App Activated");
+        appActive = true;
+
+        // Design Updates
+        statusLabel.innerHTML = "ON";
+        statusButton.className = "statusOn";
+
+        return true;
+    });
+}
+
+function appDeactivate() {
+    const statusLabel = document.getElementById("statusLabel");
+    const statusButton = document.getElementById("statusButton");
+
+    chrome.storage.local.set({ appStatus: false }).then(() => {
+        console.log("App Deactivated");
+        appActive = false;
+
+        // Design Updates
+        statusLabel.innerHTML = "OFF";
+        statusButton.className = "";
+
+        return true;
+    });
+}
+
 function clearAPIKey() {
     chrome.storage.local.set({ key: "" }).then(() => {
         console.log("Key Cleared");
+        appDeactivate();
     });
 }
 

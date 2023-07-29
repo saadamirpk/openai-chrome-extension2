@@ -54,3 +54,38 @@ input:focus {
     filter: blur(50px);
     z-index: -1;
 }
+
+.toggleHolder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+}
+
+#statusButton {
+    width: 70px;
+    height: 32px;
+    background-color: #01373b;
+    border-radius: 28%;
+}
+
+#statusButton:hover {
+    cursor: pointer;
+}
+
+.circle {
+    height: 26px;
+    width: 26px;
+    border-radius: 100%;
+    background-color: #fff;
+    margin-top: 3px;
+    margin-left: 5px;
+}
+
+.statusOn {
+    background-color: #1ca4ad !important;
+}
+
+.statusOn > .circle {
+    margin-left: 40px;
+}

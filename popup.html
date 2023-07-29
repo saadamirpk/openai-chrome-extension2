@@ -13,8 +13,17 @@
             <input type="text" id="apiInput" placeholder="Enter OpenAI Key" />
             <button id="saveAPIButton">Save Key</button>
         </section>
-        <div id="blurBox"></div>
         <section>
+            <h2>App Status</h2>
+            <div class="toggleHolder">
+                <div id="statusButton" class="">
+                    <div class="circle"></div>
+                </div>
+                <p id="statusLabel"></p>
+            </div>
+        </section>
+        <div id="blurBox"></div>
+        <section style="display: none">
             <h2>Find and Replace</h2>
             <input
                 type="text"
