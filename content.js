@@ -38,27 +38,37 @@ document.addEventListener("mouseup", function () {
     const selectionRange = window.getSelection().getRangeAt(0);
     const boundingRect = selectionRange.getBoundingClientRect();
 
-    if (promptInput) {
-        createButton("R", 3, promptInput, "", boundingRect);
-        createButton(
-            "P",
-            2,
-            promptInput,
-            "Fix Punctuation Mistakes",
-            boundingRect
-        );
-        createButton(
-            "S",
-            1,
-            promptInput,
-            "Fix Spelling Mistakes",
-            boundingRect
-        );
+    chrome.storage.local.get(["appStatus"]).then((result) => {
+        if (result.appStatus) {
+            if (promptInput) {
+                createButton("R", 3, promptInput, "", boundingRect);
+                createButton(
+                    "P",
+                    2,
+                    promptInput,
+                    "Fix Punctuation Mistakes",
+                    boundingRect
+                );
+                createButton(
+                    "S",
+                    1,
+                    promptInput,
+                    "Fix Spelling Mistakes",
+                    boundingRect
+                );
 
-        createButton("G", 0, promptInput, "Fix Grammar Mistakes", boundingRect);
-    } else {
-        removeAllButtons();
-    }
+                createButton(
+                    "G",
+                    0,
+                    promptInput,
+                    "Fix Grammar Mistakes",
+                    boundingRect
+                );
+            } else {
+                removeAllButtons();
+            }
+        }
+    });
 });
 
 port.onMessage.addListener((message) => {
