@@ -7,7 +7,6 @@ let appActive = false;
 document.addEventListener("DOMContentLoaded", function () {
     isAPIKeySaved();
     isAppActive();
-    //clearAPIKey();
 
     const statusButton = document.getElementById("statusButton");
     statusButton.addEventListener("click", function () {
@@ -19,6 +18,13 @@ document.addEventListener("DOMContentLoaded", function () {
             }
         } else {
             appDeactivate();
+        }
+    });
+
+    const resetKey = document.getElementById("resetKey");
+    resetKey.addEventListener("click", function () {
+        if (apiKey) {
+            clearAPIKey();
         }
     });
 
@@ -102,9 +108,11 @@ function appDeactivate() {
 }
 
 function clearAPIKey() {
+    const apiInputSection = document.getElementById("apiInputSection");
     chrome.storage.local.set({ key: "" }).then(() => {
         console.log("Key Cleared");
         appDeactivate();
+        apiInputSection.style.display = "block";
     });
 }
 

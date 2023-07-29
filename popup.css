@@ -89,3 +89,20 @@ input:focus {
 .statusOn > .circle {
     margin-left: 40px;
 }
+
+.resetSection {
+    margin-top: 12px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.resetSection > p {
+    width: fit-content;
+    font-size: 9px;
+}
+
+.resetSection > p:hover {
+    cursor: pointer;
+}

@@ -10,7 +10,7 @@ function createButton(
     boundingX,
     boundingY
 ) {
-    const button = document.createElement("div");
+    const button = document.createElement("button");
     button.innerText = text;
     button.id = "Intellithing-" + text + "-Button";
     buttonIds.push(button.id);
