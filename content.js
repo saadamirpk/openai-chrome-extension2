@@ -12,6 +12,7 @@ function createButton(
 ) {
     const button = document.createElement("button");
     button.innerText = text;
+    button.className = "IntBtnActions";
     button.id = "Intellithing-" + text + "-Button";
     buttonIds.push(button.id);
 
@@ -41,7 +42,9 @@ function createButton(
 
 document.addEventListener("mouseup", function (event) {
     const promptInput = window.getSelection().toString().trim();
-
+    if (event.target.className === "IntBtnActions") {
+        return;
+    }
     if (promptInput) {
         chrome.storage.local.get(["appStatus"]).then((result) => {
             if (result.appStatus) {
