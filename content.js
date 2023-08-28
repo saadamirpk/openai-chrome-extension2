@@ -49,35 +49,35 @@ document.addEventListener("mouseup", function (event) {
         chrome.storage.local.get(["appStatus"]).then((result) => {
             if (result.appStatus) {
                 createButton(
-                    "R",
+                    "Grammar",
                     3,
                     promptInput,
-                    "",
+                    "Fix grammar and puctuation in the following sentence: ",
                     event.clientY,
                     event.clientX
                 );
                 createButton(
-                    "P",
+                    "Spelling",
                     2,
                     promptInput,
-                    "Fix Punctuation Mistakes",
+                    "Fix spelling in the following sentence: ",
                     event.clientY,
                     event.clientX
                 );
                 createButton(
-                    "S",
+                    "Casual",
                     1,
                     promptInput,
-                    "Fix Spelling Mistakes",
+                    "Make the following sentence more casual: ",
                     event.clientY,
                     event.clientX
                 );
 
                 createButton(
-                    "G",
+                    "Formal",
                     0,
                     promptInput,
-                    "Fix Grammar Mistakes",
+                    "Make the following sentence more formal: ",
                     event.clientY,
                     event.clientX
                 );
